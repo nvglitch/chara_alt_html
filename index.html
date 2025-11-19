@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>角色展示 UI Demo</title>
+    <title>火焰纹章 Three Wagons </title>
     <style>
         /* ================= 基础样式 ================= */
         * {
@@ -16,7 +16,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f0f2f5;
             height: 100vh;
-            overflow: hidden; /* 防止页面滚动 */
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -31,36 +31,31 @@
             position: relative;
         }
 
-        /* ================= 左侧列表 (Sidebar) ================= */
+        /* ================= 左侧列表 ================= */
         .sidebar {
             width: 300px;
             height: 100%;
             padding: 40px 20px;
             background: rgba(255, 255, 255, 0.5);
-            backdrop-filter: blur(10px); /* 毛玻璃效果 */
+            backdrop-filter: blur(10px);
             border-right: 1px solid rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
             gap: 15px;
-            z-index: 10; /* 确保列表在立绘上面 */
+            z-index: 10;
             overflow-y: auto;
         }
 
-        /* 单个角色选项卡 */
         .char-item {
             display: flex;
             align-items: center;
             padding: 10px;
             border-radius: 8px;
             cursor: pointer;
-            
-            /* 默认状态：半透明，正常大小 */
             opacity: 0.6;
             transform: scale(1);
             background: transparent;
             border-left: 4px solid transparent;
-            
-            /* 过渡动画的关键：0.3秒平滑变化 */
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
@@ -69,48 +64,29 @@
             background: rgba(255,255,255, 0.3);
         }
 
-        /* === 激活状态 (Selected) === */
-        /* 这里实现了你要的“变大”和“高亮” */
         .char-item.active {
-            opacity: 1; /* 完全不透明 */
-            transform: scale(1.05) translateX(10px); /* 稍微放大并向右移动一点 */
+            opacity: 1;
+            transform: scale(1.05) translateX(10px);
             background: #fff;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1); /* 增加阴影突显层级 */
-            border-left: 4px solid #333; /* 左侧加个深色条，模仿游戏里的选中标记 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #333;
         }
 
-        /* 头像图片 */
         .char-avatar {
             width: 50px;
             height: 50px;
-            border-radius: 50%; /* 圆形头像 */
+            border-radius: 50%;
             object-fit: cover;
             margin-right: 15px;
             border: 2px solid transparent;
             transition: border-color 0.3s;
         }
-        
+
         .char-item.active .char-avatar {
-            border-color: #ffb700; /* 选中时头像加个金边 */
+            border-color: #ffb700;
         }
 
-        .char-info {
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .char-name {
-            font-weight: bold;
-            font-size: 16px;
-            color: #333;
-        }
-        
-        .char-class {
-            font-size: 12px;
-            color: #666;
-        }
-
-        /* ================= 右侧展示区 (Main View) ================= */
+        /* ================= 主区域 ================= */
         .main-view {
             flex: 1;
             position: relative;
@@ -119,11 +95,10 @@
             align-items: center;
             overflow: hidden;
             background-image: url('背景图.png');
-            background-size: cover;        /* 让背景铺满 */
-            background-position: center;   /* 居中 */
+            background-size: cover;
+            background-position: center;
         }
 
-        /* 背景装饰字 (模拟背景的魔法阵或文字) */
         .bg-decoration {
             position: absolute;
             top: 50%;
@@ -136,26 +111,22 @@
             z-index: 0;
         }
 
-        /* 角色立绘图片 */
         .tachie-img {
-            height: 90%; /* 占据高度的90% */
+            height: 90%;
             max-width: 100%;
-            object-fit: contain; /* 保持比例 */
+            object-fit: contain;
             z-index: 1;
-            
-            /* 立绘切换时的淡入动画 */
             opacity: 0;
             transform: translateX(50px);
             transition: opacity 0.5s ease-out, transform 0.5s ease-out;
         }
 
-        /* 图片加载完成后的类，用于触发动画 */
         .tachie-img.show {
             opacity: 1;
             transform: translateX(0);
         }
 
-        /* 右侧信息面板 (模仿截图右边的数值) */
+        /* ================= 右侧面板 ================= */
         .info-panel {
             position: absolute;
             right: 40px;
@@ -176,17 +147,36 @@
             padding-bottom: 5px;
         }
 
+        /* ================= 发光按钮 ================= */
+        #char-link-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            background: #222;
+            color: white;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.35);
+        }
+
+        #char-link-btn:hover {
+            transform: scale(1.07);
+            box-shadow: 0 0 25px rgba(255, 255, 255, 0.65);
+            background: #333;
+        }
     </style>
 </head>
 <body>
 
 <div class="game-container">
-    <div class="sidebar" id="sidebar">
-        </div>
+    <div class="sidebar" id="sidebar"></div>
 
     <div class="main-view">
         <div class="bg-decoration">SSR</div>
-        
+
         <img id="main-art" class="tachie-img" src="" alt="角色立绘">
 
         <div class="info-panel">
@@ -196,116 +186,86 @@
             <p>爆发力 <span style="float:right; color: #27ae60">12,325</span></p>
             <p>危险度 <span style="float:right; color: #27ae60">13,423</span></p>
             <p>有毒性 <span style="float:right; color: #27ae60">7,120</span></p>
+
+            <button id="char-link-btn">前往角色网站</button>
         </div>
     </div>
 </div>
 
 <script>
-    // 1. 配置数据
-    // 注意：这里的图片路径对应你本地的文件名
     const characters = [
         {
             id: 1,
             name: "AOMIA",
-            class: "SSR / 弓箭手",
-            avatar: "头像1.png", // 确保你有这张图
-            art: "立绘1.png"    // 确保你有这张图
+            class: "SSR / 普通推车",
+            avatar: "头像1.png",
+            art: "立绘1.png",
+            link: "https://example.com/aomia"
         },
         {
             id: 2,
             name: "NWH",
-            class: "SR / 牧师",
+            class: "SSR / 户外推车",
             avatar: "头像2.png",
-            art: "立绘2.png"
+            art: "立绘2.png",
+            link: "https://example.com/nwh"
         },
         {
             id: 3,
             name: "JIGOBING",
-            class: "SSR / 战士",
+            class: "SSR / 战车",
             avatar: "头像3.png",
-            art: "立绘3.png"
+            art: "立绘3.png",
+            link: "https://example.com/jigobing"
         }
     ];
 
-    // 2. 获取DOM元素
     const sidebar = document.getElementById('sidebar');
     const mainArt = document.getElementById('main-art');
     const infoName = document.getElementById('info-name');
+    const linkBtn = document.getElementById('char-link-btn');
 
-    // 为了演示效果，如果图片加载失败（因为你还没放图片），我会用在线占位图代替
-    // 正式使用时请删除下面这个函数
-    function getValidSrc(path, type) {
-        // 简单的逻辑：实际使用中直接返回 path 即可
-        // return path; 
-        
-        // 演示用逻辑：
-        const params = type === 'art' ? '400x800/2c3e50/ffffff?text=Body+Art' : '100x100/e74c3c/ffffff?text=Avatar';
-        // 如果你想看效果但还没放图，可以使用下面的在线地址：
-        // return `https://via.placeholder.com/${params}`;
-        
-        return path; // 默认返回用户设置的文件名
-    }
-
-    // 3. 初始化渲染列表
     function init() {
         characters.forEach((char, index) => {
-            // 创建列表项
             const item = document.createElement('div');
             item.className = 'char-item';
-            item.dataset.index = index; // 存索引方便调用
-            
-            // 内部HTML结构
+            item.dataset.index = index;
+
             item.innerHTML = `
-                <img src="${getValidSrc(char.avatar, 'avatar')}" class="char-avatar" alt="avatar">
+                <img src="${char.avatar}" class="char-avatar" alt="avatar">
                 <div class="char-info">
                     <span class="char-name">${char.name}</span>
                     <span class="char-class">${char.class}</span>
                 </div>
             `;
 
-            // 点击事件
             item.addEventListener('click', () => selectCharacter(index));
-
-            // 添加到侧边栏
             sidebar.appendChild(item);
         });
 
-        // 默认选中第一个
-        if (characters.length > 0) {
-            selectCharacter(0);
-        }
+        selectCharacter(0);
     }
 
-    // 4. 核心切换逻辑
     function selectCharacter(index) {
         const selectedChar = characters[index];
-        
-        // A. 更新侧边栏样式
-        const items = document.querySelectorAll('.char-item');
-        items.forEach(item => item.classList.remove('active')); // 移除所有active
-        items[index].classList.add('active'); // 给当前点击的加上active
 
-        // B. 更新立绘 (带一点动画技巧)
-        // 先移除 show 类，让图片透明度变0
+        document.querySelectorAll('.char-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.char-item')[index].classList.add('active');
+
         mainArt.classList.remove('show');
-        
-        // 设置短暂延迟，等图片“隐身”后再切换源，防止闪烁
+
         setTimeout(() => {
-            mainArt.src = getValidSrc(selectedChar.art, 'art');
+            mainArt.src = selectedChar.art;
             infoName.textContent = selectedChar.name;
-            
-            // 图片加载完了再显示出来（触发CSS transition）
-            mainArt.onload = () => {
-                mainArt.classList.add('show');
-            };
-            // 如果图片已经在缓存里，onload可能不触发，直接强制显示
-            if(mainArt.complete) mainArt.classList.add('show');
+
+            mainArt.onload = () => mainArt.classList.add('show');
+            if (mainArt.complete) mainArt.classList.add('show');
         }, 200);
+
+        linkBtn.onclick = () => window.open(selectedChar.link, "_blank");
     }
 
-    // 运行
     init();
-
 </script>
 
 </body>
